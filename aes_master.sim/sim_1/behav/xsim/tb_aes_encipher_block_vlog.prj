@@ -1,0 +1,11 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  \
+"../../../../../../aes-master/aes-master/src/rtl/aes_encipher_block.v" \
+"../../../../../../aes-master/aes-master/src/rtl/aes_sbox.v" \
+"../../../../../../aes-master/aes-master/src/tb/tb_aes_encipher_block.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

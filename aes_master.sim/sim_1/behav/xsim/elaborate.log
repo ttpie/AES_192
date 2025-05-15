@@ -1,0 +1,16 @@
+Vivado Simulator 2019.2
+Copyright 1986-1999, 2001-2019 Xilinx, Inc. All Rights Reserved.
+Running: C:/Vitis/Vivado/2019.2/bin/unwrapped/win64.o/xelab.exe -wto eb963f5424ec4de59d762201489000f2 --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot tb_aes_encipher_block_behav xil_defaultlib.tb_aes_encipher_block xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+Completed static elaboration
+Starting simulation data flow analysis
+WARNING: [XSIM 43-4100] "C:/Users/OS/Downloads/FGPA/aes_master/aes_master.sim/sim_1/behav/xsim/glbl.v" Line 6. Module glbl has a timescale but at least one module in design doesn't have timescale.
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.aes_sbox
+Compiling module xil_defaultlib.aes_encipher_block
+Compiling module xil_defaultlib.tb_aes_encipher_block
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot tb_aes_encipher_block_behav

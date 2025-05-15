@@ -1,0 +1,80 @@
+Vivado Simulator 2019.2
+Time resolution is 1 ps
+   -= Testbench for aes encipher block started =-
+     ============================================
+
+--- Toggle reset.
+
+--- test_nist_enc_128_1: Started.
+--- ECB mode test started.
+--- Testcase successful.
+--- Got: 0x3ad77bb40d7a3660a89ecaf32466ef97
+--- ECB mode test completed.
+--- test_nist_enc_128_1: Completed.
+
+--- test_nist_enc_128_2: Started.
+--- ECB mode test started.
+--- Testcase successful.
+--- Got: 0xf5d3d58503b9699de785895a96fdbaaf
+--- ECB mode test completed.
+--- test_nist_enc_128_2: Completed.
+
+--- test_nist_enc_128_3: Started.
+--- ECB mode test started.
+--- Testcase successful.
+--- Got: 0x43b1cd7f598ece23881b00e3ed030688
+--- ECB mode test completed.
+--- test_nist_enc_128_3: Completed.
+
+--- test_nist_enc_128_4: Started.
+--- ECB mode test started.
+--- Testcase successful.
+--- Got: 0x7b0c785e27e8ad3f8223207104725dd4
+--- ECB mode test completed.
+--- test_nist_enc_128_4: Completed.
+
+--- test_nist_enc_192_1: Started.
+--- ECB mode test started.
+--- ERROR: Testcase NOT successful.
+--- Expected: 0xbd334f1d6e45f25ff712a214571fa5cc
+--- Got:      0x00b40da598ad776a99ac50ad3fa58215
+--- ECB mode test completed.
+--- test_nist_enc_192_1: Completed.
+
+--- test_nist_enc_256_1: Started.
+--- ECB mode test started.
+--- ERROR: Testcase NOT successful.
+--- Expected: 0xf3eed1bdb5d2a03c064b5a7e3db181f8
+--- Got:      0xdd045bd2ff00036624b3f30278114202
+--- ECB mode test completed.
+--- test_nist_enc_256_1: Completed.
+
+--- test_nist_enc_256_2: Started.
+--- ECB mode test started.
+--- ERROR: Testcase NOT successful.
+--- Expected: 0x591ccb10d410ed26dc5ba74a31362870
+--- Got:      0xc33c07492ab52b34469eadcd264dffed
+--- ECB mode test completed.
+--- test_nist_enc_256_2: Completed.
+
+--- test_nist_enc_256_3: Started.
+--- ECB mode test started.
+--- ERROR: Testcase NOT successful.
+--- Expected: 0xb6ed21b99ca6f4f9f153e7b1beafed1d
+--- Got:      0xc5dd4f2a05af432f2c223aa9ccb61686
+--- ECB mode test completed.
+--- test_nist_enc_256_3: Completed.
+
+--- test_nist_enc_256_4: Started.
+--- ECB mode test started.
+--- ERROR: Testcase NOT successful.
+--- Expected: 0x23304b7a39f9f3ff067d8d8f9e24ecc7
+--- Got:      0x8e919b274fa518f57250c657d637338e
+--- ECB mode test completed.
+--- test_nist_enc_256_4: Completed.
+
+--- 09 tests completed - 05 test cases did not complete successfully.
+
+   -= Testbench for aes encipher block completed =-
+     ============================================
+$finish called at time : 960 ns : File "C:/Users/OS/Downloads/aes-master/aes-master/src/tb/tb_aes_encipher_block.v" Line 606
