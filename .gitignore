@@ -11,6 +11,8 @@ test*
 
 ## Log files
 *.log
+## xpr
+*.xpr
 
 
 ## Subdirs in toolruns for vendor tools
@@ -20,6 +22,7 @@ test*
 /toolruns/modelsim
 /toolruns/libero
 /toolruns/icestorm
+
 
 #=======================================================================
 # EOF .gitignore
