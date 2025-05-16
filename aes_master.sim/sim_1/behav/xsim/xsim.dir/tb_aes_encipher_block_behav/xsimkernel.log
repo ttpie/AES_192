@@ -1,7 +1,0 @@
-Running: xsim.dir/tb_aes_encipher_block_behav/xsimk.exe -simmode gui -wdb tb_aes_encipher_block_behav.wdb -simrunnum 0 -socket 51305
-Design successfully loaded
-Design Loading Memory Usage: 6172 KB (Peak: 6172 KB)
-Design Loading CPU Usage: 0 ms
-Simulation completed
-Simulation Memory Usage: 7148 KB (Peak: 7148 KB)
-Simulation CPU Usage: 77 ms

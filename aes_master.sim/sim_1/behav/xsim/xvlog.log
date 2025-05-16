@@ -1,6 +1,0 @@
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/OS/Downloads/aes-master/aes-master/src/rtl/aes_encipher_block.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module aes_encipher_block
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/OS/Downloads/aes-master/aes-master/src/rtl/aes_sbox.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module aes_sbox
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/OS/Downloads/aes-master/aes-master/src/tb/tb_aes_encipher_block.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module tb_aes_encipher_block
