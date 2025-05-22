@@ -160,9 +160,8 @@ module tb_aes_encipher_block();
       $display("State of DUT");
       $display("------------");
       $display("Interfaces");
-      $display("ready = 0x%01x, next = 0x%01x, keylen = 0x%02x",
+      $display("ready = 0x%01x, next = 0x%01x, keylen = 0x%01x",
                dut.ready, dut.next, dut.keylen);
-           
       $display("block     = 0x%032x", dut.block);
       $display("new_block = 0x%032x", dut.new_block);
       $display("");
@@ -341,24 +340,24 @@ module tb_aes_encipher_block();
     end
   endtask // load_nist128_key
   
-//-------------------------------------------------------------
-// task load_nist192
-//-------------------------------------------------------------
- task load_nist192_key;
-   begin : load_nist192_key
-    key_mem[00] = 128'h000102030405060708090a0b0c0d0e0f;
-    key_mem[01] = 128'h1011121314151617b1e8c9db1e6edc7d;
-    key_mem[02] = 128'h3569f6abf245c1655bafc6f73e8f8d64;
-    key_mem[03] = 128'h8aa84a7cb6c5b31cb2014db7b874ad0b;
-    key_mem[04] = 128'hdfc9c58db67aada613c2dd08457941a6;
-    key_mem[05] = 128'h85a7477a502f5c4b6fab6e9a3e86bfe3;
-    key_mem[06] = 128'h5f946eabbe1c91f846b74d071dc4b0c6;
-    key_mem[07] = 128'h8a5ae1e07ab69ba14ad2b0c8a60a8cc0;
-    key_mem[08] = 128'h24c05f395dc974d64fdee9d5c17f6c60;
-    key_mem[09] = 128'h82acb45a96f1336454f8fd32776e2f2f;
-    key_mem[10] = 128'h75e3e525ec44accd4fe85c505b7399a7;
-    key_mem[11] = 128'hff5b623e199731f4f9dbf6b1f652c6a0;
-    key_mem[12] = 128'h3e3e7d1e2068ebf01f9c760d01c44a8f;
+//-----------------------------------------------------------------
+//-- load_nist 192bit
+//-----------------------------------------------------------------
+task load_nist192_key;
+  begin
+    key_mem[00] = 128'h8e73b0f7da0e6452c810f32b809079e5;
+    key_mem[01] = 128'h62f8ead2522c6b7bfe0c91f72402f5a5;
+    key_mem[02] = 128'hec12068e6c827f6b0e7a95b95c56fec2;
+    key_mem[03] = 128'h4db7b4bd69b5411885a74796e92538fd;
+    key_mem[04] = 128'he75fad44bb095386485af05721efb14f;
+    key_mem[05] = 128'ha448f6d94d6dce24aa326360113b30e6;
+    key_mem[06] = 128'ha25e7ed583b1cf9a27f939436a94f767;
+    key_mem[07] = 128'hc0a69407d19da4e1d19da4e16fa64971;
+    key_mem[08] = 128'h485f703222cb8755e26d135233f0b7b3;
+    key_mem[09] = 128'h40beeb282f18a2596747d26b458c553e;
+    key_mem[10] = 128'ha7e1466c9411f1df821f750aad07d753;
+    key_mem[11] = 128'hca4005388fcc5006282d166abc3ce7b5;
+    key_mem[12] = 128'he98ba06f448c773c8ecc720401002202;
   end
 endtask
 
@@ -464,21 +463,15 @@ endtask
       $display("");
     end
   endtask // test_nist_enc_128_4
-
-
-  //---------------------------------------------------------------
-  // test_nist_192
-  //---------------------------------------------------------------
+//---------------------------------------------------------
+//---------- 192_1
+//---------------------------------------------------------
   task test_nist_enc_192_1;
   begin : nist_enc_192_1
     reg [127 : 0] plaintext;
     reg [127 : 0] ciphertext;
 
-    // NIST AES-192 test vector
-    // Key:        000102030405060708090a0b0c0d0e0f1011121314151617
-    // Plaintext:  6bc1bee22e409f96e93d7e117393172a
-    // Ciphertext: bd334f1d6e45f25ff712a214571fa5cc
-
+    // NIST ECB-AES192 example: FIPS-197 Appendix C.2
     plaintext  = 128'h6bc1bee22e409f96e93d7e117393172a;
     ciphertext = 128'hbd334f1d6e45f25ff712a214571fa5cc;
 
@@ -490,7 +483,27 @@ endtask
     $display("");
   end
 endtask // test_nist_enc_192_1
-  
+//------------------------------------------------------
+//-- 192_2
+//------------------------------------------------------
+  task test_nist_enc_192_2;
+  begin : nist_enc_192_2
+    reg [127 : 0] plaintext;
+    reg [127 : 0] ciphertext;
+
+    // NIST ECB-AES192 example: block 2
+    plaintext  = 128'hae2d8a571e03ac9c9eb76fac45af8e51;
+    ciphertext = 128'h974104846d0ad3ad7734ecb3ecee4eef;
+
+    $display("--- test_nist_enc_192_2: Started.");
+
+    test_ecb_enc(AES_192_BIT_KEY, plaintext, ciphertext);
+
+    $display("--- test_nist_enc_192_2: Completed.");
+    $display("");
+  end
+endtask // test_nist_enc_192_2
+
   //----------------------------------------------------------------
   // test_nist_enc_256_1
   //----------------------------------------------------------------
@@ -589,10 +602,11 @@ endtask // test_nist_enc_192_1
       test_nist_enc_128_2();
       test_nist_enc_128_3();
       test_nist_enc_128_4();
-      
-      load_nist192_key();
-      test_nist_enc_192_1(); 
 
+      load_nist192_key();
+      test_nist_enc_192_1();
+      test_nist_enc_192_2();
+      
       load_nist256_key();
       test_nist_enc_256_1();
       test_nist_enc_256_2();

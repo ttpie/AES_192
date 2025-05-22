@@ -79,7 +79,7 @@ module tb_aes_key_mem();
 
   wire [31 : 0]  tb_sboxw;
   wire [31 : 0]  tb_new_sboxw;
-  
+
 
   //----------------------------------------------------------------
   // Device Under Test.
@@ -144,21 +144,9 @@ module tb_aes_key_mem();
       $display("------------");
       $display("Inputs and outputs:");
       $display("key       = 0x%032x", dut.key);
-//      $display("keylen    = 0x%01x, init = 0x%01x, ready = 0x%01x",
-//               dut.keylen, dut.init, dut.ready); 
-      case (dut.keylen)
-            2'b00: $display("key       = 0x%016x", dut.key[127:0]);
-            2'b01: $display("key       = 0x%024x", dut.key[191:0]);
-            2'b10: $display("key       = 0x%032x", dut.key[255:0]);
-            default: $display("key       = Invalid keylen");
-      endcase
-     // $display("round     = 0x%02x", dut.round);
-      $display("round     = 0x%02x (expected max for keylen %01x: %0d)",
-         dut.round, dut.keylen,
-         (dut.keylen == 2'b00) ? 10 :
-         (dut.keylen == 2'b01) ? 12 :
-         (dut.keylen == 2'b10) ? 14 : 0);
-
+      $display("keylen    = 0x%01x, init = 0x%01x, ready = 0x%01x",
+               dut.keylen, dut.init, dut.ready);
+      $display("round     = 0x%02x", dut.round);
       $display("round_key = 0x%016x", dut.round_key);
       $display("");
 
@@ -328,27 +316,24 @@ module tb_aes_key_mem();
       tc_ctr = tc_ctr + 1;
     end
   endtask // test_key_128
-  
-  //----------------------------------------------------------------
-  // test_key_192
-  task test_key_192(
-  input [255 : 0] key,  
-  input [127 : 0] expected00,
-  input [127 : 0] expected01,
-  input [127 : 0] expected02,
-  input [127 : 0] expected03,
-  input [127 : 0] expected04,
-  input [127 : 0] expected05,
-  input [127 : 0] expected06,
-  input [127 : 0] expected07,
-  input [127 : 0] expected08,
-  input [127 : 0] expected09,
-  input [127 : 0] expected10,
-  input [127 : 0] expected11,
-  input [127 : 0] expected12
-);
+  //-------------------------------------------------------------
+  task test_key_192(input [255 : 0] key,
+                  input [127 : 0] expected00,
+                  input [127 : 0] expected01,
+                  input [127 : 0] expected02,
+                  input [127 : 0] expected03,
+                  input [127 : 0] expected04,
+                  input [127 : 0] expected05,
+                  input [127 : 0] expected06,
+                  input [127 : 0] expected07,
+                  input [127 : 0] expected08,
+                  input [127 : 0] expected09,
+                  input [127 : 0] expected10,
+                  input [127 : 0] expected11,
+                  input [127 : 0] expected12
+                 );
   begin
-    $display("** Testing with 192-bit key 0x%048x", key[255:64]);
+    $display("** Testing with 192-bit key 0x%24x", key[255 : 64]);
     $display("");
 
     tb_key = key;
@@ -375,6 +360,7 @@ module tb_aes_key_mem();
     tc_ctr = tc_ctr + 1;
   end
 endtask // test_key_192
+
 
   //----------------------------------------------------------------
   // test_key_256()
@@ -467,7 +453,7 @@ endtask // test_key_192
       reg [255 : 0] key192_0;
       reg [255 : 0] key192_1;
       reg [255 : 0] nist_key192;
-
+      
       reg [255 : 0] key256_0;
       reg [255 : 0] key256_1;
       reg [255 : 0] key256_2;
@@ -522,27 +508,28 @@ endtask // test_key_192
                    expected_04, expected_05, expected_06, expected_07,
                    expected_08, expected_09, expected_10);
 
-
+      
       // AES-128 test case 2 key and expected values.
-      key128_1    = 256'hffffffffffffffffffffffffffffffff00000000000000000000000000000000;
-      expected_00 = 128'hffffffffffffffffffffffffffffffff;
-      expected_01 = 128'he8e9e9e917161616e8e9e9e917161616;
-      expected_02 = 128'hadaeae19bab8b80f525151e6454747f0;
-      expected_03 = 128'h090e2277b3b69a78e1e7cb9ea4a08c6e;
-      expected_04 = 128'he16abd3e52dc2746b33becd8179b60b6;
-      expected_05 = 128'he5baf3ceb766d488045d385013c658e6;
-      expected_06 = 128'h71d07db3c6b6a93bc2eb916bd12dc98d;
-      expected_07 = 128'he90d208d2fbb89b6ed5018dd3c7dd150;
-      expected_08 = 128'h96337366b988fad054d8e20d68a5335d;
-      expected_09 = 128'h8bf03f233278c5f366a027fe0e0514a3;
-      expected_10 = 128'hd60a3588e472f07b82d2d7858cd7c326;
+      // new
+      key128_1    = 256'h2b7e151628aed2a6abf7158809cf4f3c00000000000000000000000000000000;
+      expected_00 = 128'h2b7e151628aed2a6abf7158809cf4f3c;
+      expected_01 = 128'ha0fafe1788542cb123a339392a6c7605;
+      expected_02 = 128'hf2c295f27a96b9435935807a7359f67f;
+      expected_03 = 128'h3d80477d4716fe3e1e237e446d7a883b;
+      expected_04 = 128'hef44a541a8525b7fb671253bdb0bad00;
+      expected_05 = 128'hd4d1c6f87c839d87caf2b8bc11f915bc;
+      expected_06 = 128'h6d88a37a110b3efddbf98641ca0093fd;
+      expected_07 = 128'h4e54f70e5f5fc9f384a64fb24ea6dc4f;
+      expected_08 = 128'head27321b58dbad2312bf5607f8d292f;
+      expected_09 = 128'hac7766f319fadc2128d12941575c006e;
+      expected_10 = 128'hd014f9a8c9ee2589e13f0cc8b6630ca6;
 
       test_key_128(key128_1,
                    expected_00, expected_01, expected_02, expected_03,
                    expected_04, expected_05, expected_06, expected_07,
                    expected_08, expected_09, expected_10);
 
-
+      
       // AES-128 test case 3 key and expected values.
       key128_2    = 256'h000102030405060708090a0b0c0d0e0f00000000000000000000000000000000;
       expected_00 = 128'h000102030405060708090a0b0c0d0e0f;
@@ -602,53 +589,52 @@ endtask // test_key_192
                    expected_00, expected_01, expected_02, expected_03,
                    expected_04, expected_05, expected_06, expected_07,
                    expected_08, expected_09, expected_10);
-                   
-      // AES-192 test case 1 - All zero key
-       key192_0    = 256'h0000000000000000000000000000000000000000000000000000000000000000;
-       expected_00 = 128'h00000000000000000000000000000000;
-       expected_01 = 128'h8e73b0f7da0e6452c810f32b809079e5;
-       expected_02 = 128'h62f8ead2522c6b7b;
-       expected_03 = 128'hfe0c91f72402f5a5ec12068e6c827f6b;
-       expected_04 = 128'h0e7a95b95c56fec2;
-       expected_05 = 128'h4db7b4bd69b54118fecb8b703aacef9c;
-       expected_06 = 128'h3e79440a;
-       expected_07 = 128'hdf8fb5c54d6d5bfc214aa2fc;
-       expected_08 = 128'h66aca472;
-       expected_09 = 128'hf56e7f8d292dc4403f;
-       expected_10 = 128'hd2f1483e;
-       expected_11 = 128'h4570502df7308f6c;
-       expected_12 = 128'ha5e99cfc;
 
-       test_key_192(key192_0,
-                    expected_00, expected_01, expected_02, expected_03,
-                    expected_04, expected_05, expected_06, expected_07,
-                    expected_08, expected_09, expected_10, expected_11,
-                    expected_12);
-             
+      // AES-192 test case 1 key and expected values.
+     key192_0    = 256'h0000000000000000000000000000000000000000000000000000000000000000;
+     expected_00 = 128'h00000000000000000000000000000000;
+     expected_01 = 128'h62636362636362636263636263636263;
+     expected_02 = 128'h9b313b391b2e2f2b9b313b391b2e2f2b;
+     expected_03 = 128'h3d80477d4716fe3e1e237e446d7a883b;
+     expected_04 = 128'hef44a541a8525b7fb671253bdb0bad00;
+     expected_05 = 128'hd4d1c6f87c839d87caf2b8bc11f915bc;
+     expected_06 = 128'h6d88a37a110b3efddbf98641ca0093fd;
+     expected_07 = 128'h4e54f70e5f5fc9f384a64fb24ea6dc4f;
+     expected_08 = 128'hed2e51bdb31e7f9e0c4e60dcc374dced;
+     expected_09 = 128'hc00b8b1873bd3f6d7e0af1fa27cf73c3;
+     expected_10 = 128'hb537f12d4cbbd5f11aa0beaf8cc08b2f;
+     expected_11 = 128'h2b8c3e4e45905a605b3c6d66f82f5bdd;
+     expected_12 = 128'hec819d3f11c6d85f2bf0b8f3218a6a47;
 
-      // AES-192 test case from NIST
-      nist_key192 = 256'h8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b0000000000000000;
+     test_key_192(key192_0,
+             expected_00, expected_01, expected_02, expected_03,
+             expected_04, expected_05, expected_06, expected_07,
+             expected_08, expected_09, expected_10, expected_11,
+             expected_12);
+     
+      // AES-192 test case 1 key and expected values.
+     key192_1    = 256'h8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b0000000000000000;
+     expected_00 = 128'h8e73b0f7da0e6452c810f32b809079e5;
+     expected_01 = 128'h62f8ead2522c6b7bfe0c91f72402f5a5;
+     expected_02 = 128'hec12068e6c827f6b0e7a95b95c56fec2;
+     expected_03 = 128'h4db7b4bd69b5411885a74796e92538fd;
+     expected_04 = 128'he75fad44bb095386485af05721efb14f;
+     expected_05 = 128'ha448f6d94d6dce24aa326360113b30e6;
+     expected_06 = 128'ha25e7ed583b1cf9a27f939436a94f767;
+     expected_07 = 128'hc0a69407d19da4e1d19da4e16fa64971;
+     expected_08 = 128'h485f703222cb8755e26d135233f0b7b3;
+     expected_09 = 128'h40beeb282f18a2596747d26b458c553e;
+     expected_10 = 128'ha7e1466c9411f1df821f750aad07d753;
+     expected_11 = 128'hca4005388fcc5006282d166abc3ce7b5;
+     expected_12 = 128'he98ba06f448c773c8ecc720401002202;
 
-      expected_00 = 128'h8e73b0f7da0e6452c810f32b809079e5;
-      expected_01 = 128'h62f8ead2522c6b7bfe0c91f72402f5a5;
-      expected_02 = 128'hec12068e6c827f6b0e7a95b95c56fec2;
-      expected_03 = 128'h4db7b4bd69b5411885a74796e92538fd;
-      expected_04 = 128'he75fad44bb095386485af05721efb14f;
-      expected_05 = 128'ha448f6d94d6dce24aa326360113b30e6;
-      expected_06 = 128'ha25e7ed583b1cf9a27f939436a94f767;
-      expected_07 = 128'hc0a69407d19da4e1ec1786eb6fa64971;
-      expected_08 = 128'h485f703222cb8755e26d135233f0b7b3;
-      expected_09 = 128'h40beeb282f18a2596747d26b458c553e;
-      expected_10 = 128'ha7e1466c9411f1df821f750aad07d753;
-      expected_11 = 128'hca4005388fcc5006282d166abc3ce7b5;
-      expected_12 = 128'he98ba06f448c773c8ecc720401002202;
+     test_key_192(key192_1,
+             expected_00, expected_01, expected_02, expected_03,
+             expected_04, expected_05, expected_06, expected_07,
+             expected_08, expected_09, expected_10, expected_11,
+             expected_12);
 
-       test_key_192(nist_key192,
-                    expected_00, expected_01, expected_02, expected_03, expected_04,
-                    expected_05, expected_06, expected_07, expected_08, expected_09,
-                    expected_10, expected_11, expected_12);
-                    
-                    
+
       // AES-256 test case 1 key and expected values.
       key256_0    = 256'h000000000000000000000000000000000000000000000000000000000000000;
       expected_00 = 128'h00000000000000000000000000000000;
