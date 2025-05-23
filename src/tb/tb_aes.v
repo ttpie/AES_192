@@ -85,7 +85,8 @@ module tb_aes();
   parameter ADDR_RESULT3     = 8'h33;
 
   parameter AES_128_BIT_KEY = 0;
-  parameter AES_256_BIT_KEY = 1;
+  parameter AES_192_BIT_KEY = 1;
+  parameter AES_256_BIT_KEY = 2;
 
   parameter AES_DECIPHER = 1'b0;
   parameter AES_ENCIPHER = 1'b1;
@@ -166,7 +167,7 @@ module tb_aes();
       $display("State of DUT");
       $display("------------");
       $display("ctrl_reg:   init   = 0x%01x, next   = 0x%01x", dut.init_reg, dut.next_reg);
-      $display("config_reg: encdec = 0x%01x, length = 0x%01x ", dut.encdec_reg, dut.keylen_reg);
+      $display("config_reg: encdec = 0x%01x, length = 0x%02x ", dut.encdec_reg, dut.keylen_reg);
       $display("");
 
       $display("block: 0x%08x, 0x%08x, 0x%08x, 0x%08x",
@@ -327,11 +328,11 @@ module tb_aes();
   // init the key in the dut by writing the given key and
   // key length and then trigger init processing.
   //----------------------------------------------------------------
-  task init_key(input [255 : 0] key, input key_length);
+  task init_key(input [255 : 0] key, input [1 : 0] key_length);
     begin
       if (DEBUG)
         begin
-          $display("key length: 0x%01x", key_length);
+          $display("key length: 0x%02x", key_length);
           $display("Initializing key expansion for key: 0x%016x", key);
         end
 
@@ -368,7 +369,7 @@ module tb_aes();
   task ecb_mode_single_block_test(input [7 : 0]   tc_number,
                                   input           encdec,
                                   input [255 : 0] key,
-                                  input           key_length,
+                                  input [1 : 0]   key_length,
                                   input [127 : 0] block,
                                   input [127 : 0] expected);
     begin
@@ -419,6 +420,8 @@ module tb_aes();
   task aes_test;
     reg [255 : 0] nist_aes128_key1;
     reg [255 : 0] nist_aes128_key2;
+    reg [255 : 0] nist_aes192_key1;
+    reg [255 : 0] nist_aes192_key2;
     reg [255 : 0] nist_aes256_key1;
     reg [255 : 0] nist_aes256_key2;
 
@@ -433,6 +436,12 @@ module tb_aes();
     reg [127 : 0] nist_ecb_128_enc_expected2;
     reg [127 : 0] nist_ecb_128_enc_expected3;
     reg [127 : 0] nist_ecb_128_enc_expected4;
+    
+    reg [127 : 0] nist_ecb_192_enc_expected0;
+    reg [127 : 0] nist_ecb_192_enc_expected1;
+    reg [127 : 0] nist_ecb_192_enc_expected2;
+    reg [127 : 0] nist_ecb_192_enc_expected3;
+    reg [127 : 0] nist_ecb_192_enc_expected4;
 
     reg [127 : 0] nist_ecb_256_enc_expected0;
     reg [127 : 0] nist_ecb_256_enc_expected1;
@@ -443,6 +452,10 @@ module tb_aes();
     begin
       nist_aes128_key1 = 256'h2b7e151628aed2a6abf7158809cf4f3c00000000000000000000000000000000;
       nist_aes128_key2 = 256'h000102030405060708090a0b0c0d0e0f00000000000000000000000000000000;
+      
+      nist_aes192_key1 = 256'h8e73b0f7da0e6452c810f32b809079e500000000000000000000000000000000;
+      nist_aes192_key2 = 256'h000102030405060708090a0b0c0d0e0f10111213000000000000000000000000;
+
       nist_aes256_key1 = 256'h603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4;
       nist_aes256_key2 = 256'h000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f;
 
@@ -457,6 +470,12 @@ module tb_aes();
       nist_ecb_128_enc_expected2 = 128'h43b1cd7f598ece23881b00e3ed030688;
       nist_ecb_128_enc_expected3 = 128'h7b0c785e27e8ad3f8223207104725dd4;
       nist_ecb_128_enc_expected4 = 128'h69c4e0d86a7b0430d8cdb78070b4c55a;
+      
+      nist_ecb_192_enc_expected0 = 128'hbd334f1d6e45f25ff712a214571fa5cc;
+      nist_ecb_192_enc_expected1 = 128'h974104846d0ad3ad7734ecb3ecee4eef;
+      nist_ecb_192_enc_expected2 = 128'hef7afd2270e2e60adce0ba2face6444e;
+      nist_ecb_192_enc_expected3 = 128'h9a4b41ba738d6c72fb16691603c18e0e;
+      nist_ecb_192_enc_expected4 = 128'h00112233445566778899aabbccddeeff;
 
       nist_ecb_256_enc_expected0 = 128'hf3eed1bdb5d2a03c064b5a7e3db181f8;
       nist_ecb_256_enc_expected1 = 128'h591ccb10d410ed26dc5ba74a31362870;
@@ -534,6 +553,40 @@ module tb_aes();
 
       ecb_mode_single_block_test(8'h19, AES_DECIPHER, nist_aes256_key2, AES_256_BIT_KEY,
                                  nist_ecb_256_enc_expected4, nist_plaintext4);
+    
+    $display("");
+    $display("ECB 192 bit key tests");
+    $display("---------------------");
+
+    ecb_mode_single_block_test(8'h20, AES_ENCIPHER, nist_aes192_key1, AES_192_BIT_KEY,
+                           nist_plaintext0, nist_ecb_192_enc_expected0);
+
+    ecb_mode_single_block_test(8'h21, AES_ENCIPHER, nist_aes192_key1, AES_192_BIT_KEY,
+                           nist_plaintext1, nist_ecb_192_enc_expected1);
+
+    ecb_mode_single_block_test(8'h22, AES_ENCIPHER, nist_aes192_key1, AES_192_BIT_KEY,
+                           nist_plaintext2, nist_ecb_192_enc_expected2);
+
+    ecb_mode_single_block_test(8'h23, AES_ENCIPHER, nist_aes192_key1, AES_192_BIT_KEY,
+                           nist_plaintext3, nist_ecb_192_enc_expected3);
+
+    ecb_mode_single_block_test(8'h24, AES_DECIPHER, nist_aes192_key1, AES_192_BIT_KEY,
+                           nist_ecb_192_enc_expected0, nist_plaintext0);
+
+    ecb_mode_single_block_test(8'h25, AES_DECIPHER, nist_aes192_key1, AES_192_BIT_KEY,
+                           nist_ecb_192_enc_expected1, nist_plaintext1);
+
+    ecb_mode_single_block_test(8'h26, AES_DECIPHER, nist_aes192_key1, AES_192_BIT_KEY,
+                           nist_ecb_192_enc_expected2, nist_plaintext2);
+
+    ecb_mode_single_block_test(8'h27, AES_DECIPHER, nist_aes192_key1, AES_192_BIT_KEY,
+                           nist_ecb_192_enc_expected3, nist_plaintext3);
+
+    ecb_mode_single_block_test(8'h28, AES_ENCIPHER, nist_aes192_key2, AES_192_BIT_KEY,
+                           nist_plaintext4, nist_ecb_192_enc_expected4);
+
+    ecb_mode_single_block_test(8'h29, AES_DECIPHER, nist_aes192_key2, AES_192_BIT_KEY,
+                           nist_ecb_192_enc_expected4, nist_plaintext4);
     end
   endtask // aes_test
 

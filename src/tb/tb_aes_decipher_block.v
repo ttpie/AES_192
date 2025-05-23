@@ -260,7 +260,7 @@ module tb_aes_decipher_block();
   // Perform ECB mode encryption test.
   //----------------------------------------------------------------
   task test_ecb_dec(
-                    input           key_length,
+                    input [1 : 0]   key_length,
                     input [127 : 0] block,
                     input [127 : 0] expected);
    begin

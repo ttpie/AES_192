@@ -50,7 +50,8 @@ module tb_aes_core();
   parameter CLK_PERIOD = 2 * CLK_HALF_PERIOD;
 
   parameter AES_128_BIT_KEY = 0;
-  parameter AES_256_BIT_KEY = 1;
+  parameter AES_192_BIT_KEY = 1;
+  parameter AES_256_BIT_KEY = 2;
 
   parameter AES_DECIPHER = 1'b0;
   parameter AES_ENCIPHER = 1'b1;
@@ -70,7 +71,7 @@ module tb_aes_core();
   reg            tb_next;
   wire           tb_ready;
   reg [255 : 0]  tb_key;
-  reg            tb_keylen;
+  reg [1 : 0]    tb_keylen;
   reg [127 : 0]  tb_block;
   wire [127 : 0] tb_result;
   wire           tb_result_valid;
@@ -137,7 +138,7 @@ module tb_aes_core();
       $display("Inputs and outputs:");
       $display("encdec = 0x%01x, init = 0x%01x, next = 0x%01x",
                dut.encdec, dut.init, dut.next);
-      $display("keylen = 0x%01x, key  = 0x%032x ", dut.keylen, dut.key);
+      $display("keylen = 0x%02x, key  = 0x%032x ", dut.keylen, dut.key);
       $display("block  = 0x%032x", dut.block);
       $display("");
       $display("ready        = 0x%01x", dut.ready);
@@ -290,7 +291,7 @@ module tb_aes_core();
   task ecb_mode_single_block_test(input [7 : 0]   tc_number,
                                   input           encdec,
                                   input [255 : 0] key,
-                                  input           key_length,
+                                  input [1 : 0]   key_length,
                                   input [127 : 0] block,
                                   input [127 : 0] expected);
    begin

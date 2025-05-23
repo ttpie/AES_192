@@ -160,7 +160,7 @@ module tb_aes_encipher_block();
       $display("State of DUT");
       $display("------------");
       $display("Interfaces");
-      $display("ready = 0x%01x, next = 0x%01x, keylen = 0x%01x",
+      $display("ready = 0x%01x, next = 0x%01x, keylen = 0x%2x",
                dut.ready, dut.next, dut.keylen);
       $display("block     = 0x%032x", dut.block);
       $display("new_block = 0x%032x", dut.new_block);
@@ -280,7 +280,7 @@ module tb_aes_encipher_block();
   // Perform ECB mode encryption test.
   //----------------------------------------------------------------
   task test_ecb_enc(
-                    input           key_length,
+                    input [1 : 0]   key_length,
                     input [127 : 0] block,
                     input [127 : 0] expected);
    begin

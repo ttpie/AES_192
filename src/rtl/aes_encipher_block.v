@@ -62,9 +62,9 @@ module aes_encipher_block(
   //----------------------------------------------------------------
   // Internal constant and parameter definitions.
   //----------------------------------------------------------------
-  localparam AES_128_BIT_KEY = 1'h0;
-  localparam AES_192_BIT_KEY = 1'h1;
-  localparam AES_256_BIT_KEY = 1'h2;
+  localparam AES_128_BIT_KEY = 2'h0;
+  localparam AES_192_BIT_KEY = 2'h1;
+  localparam AES_256_BIT_KEY = 2'h2;
 
   localparam AES128_ROUNDS = 4'ha;
   localparam AES192_ROUNDS = 4'hc;
