@@ -50,7 +50,6 @@ module aes_key_mem(
                    output wire [127 : 0] round_key,
                    output wire           ready,
 
-
                    output wire [31 : 0]  sboxw,
                    input wire  [31 : 0]  new_sboxw
                   );
@@ -226,11 +225,6 @@ module aes_key_mem(
       w6 = prev_key1_reg[063 : 032];
       w7 = prev_key1_reg[031 : 000];
 
-      rconw = {rcon_reg, 24'h0};
-      tmp_sboxw = w7;
-      rotstw = {new_sboxw[23 : 00], new_sboxw[31 : 24]};
-      trw = rotstw ^ rconw;
-      tw = new_sboxw;
 
       // Generate the specific round keys.
       if (round_key_update)
@@ -251,6 +245,12 @@ module aes_key_mem(
                   end
                 else
                   begin
+                    rconw = {rcon_reg, 24'h0};
+                    tmp_sboxw = w7;
+                    rotstw = {new_sboxw[23 : 00], new_sboxw[31 : 24]};
+                    trw = rotstw ^ rconw;
+                  //  tw = new_sboxw;
+                    
                     k0 = w4 ^ trw;
                     k1 = w5 ^ w4 ^ trw;
                     k2 = w6 ^ w5 ^ w4 ^ trw;
@@ -275,21 +275,27 @@ begin
         prev_key1_new = {key[127 : 64], 64'h0};
         prev_key1_we  = 1'b1;
         rcon_next     = 1'b1;
-      end    
+      end  
+      
+  else if ( round_ctr_reg == 2 || round_ctr_reg == 5 || round_ctr_reg == 8 || round_ctr_reg == 11) // round 2, 5, 8, 11 => not gen_key
+      begin
+        key_mem_new   = {w2, w3, w4, w5};
+        key_mem_we    = 1'b1;
+        
+        prev_key0_new = {w0, w1, w2, w3};
+        prev_key0_we  = 1'b1;
+        
+        prev_key1_new = {w4, w5, 64'h0};
+        prev_key1_we  = 1'b1;
+      //  rcon_next     = 1'b1;
+        
+      end      
   else
       begin
-        // L?y w0-w5 t? prev_key regs
-        w0 = prev_key0_reg[127:96];
-        w1 = prev_key0_reg[95:64];
-        w2 = prev_key0_reg[63:32];
-        w3 = prev_key0_reg[31:0];
-        w4 = prev_key1_reg[127:96];
-        w5 = prev_key1_reg[95:64];
-        
         rconw = {rcon_reg, 24'h0};
-        tmp_sboxw = w5;
-        rotstw = {new_sboxw[23 : 00], new_sboxw[31 : 24]};
-        trw = rotstw ^ rconw;
+        rotstw = {w5[23 : 00], w5[31 : 24]};
+        tmp_sboxw = rotstw;
+        trw = new_sboxw ^ rconw;
         
         k0 = w0 ^ trw;
         k1 = k0 ^ w1;
@@ -297,16 +303,31 @@ begin
         k3 = k2 ^ w3;
         k4 = k3 ^ w4;
         k5 = k4 ^ w5;
-
-        key_mem_new   = {w4, w5, k0, k1};
-        key_mem_we    = 1'b1;
-
-        prev_key0_new = {k0, k1, k2, k3};
-        prev_key0_we  = 1'b1;
         
-        prev_key1_new = {k4, k5, 64'h0};
-        prev_key1_we  = 1'b1;
-        rcon_next     = 1'b1;
+        if (round_ctr_reg == 3 || round_ctr_reg == 6 || round_ctr_reg == 9)// round 3, 6, 9 excess 2 word
+          begin
+            key_mem_new   = {k0, k1, k2, k3};
+            key_mem_we    = 1'b1;
+
+            prev_key0_new = {k0, k1, k2, k3};
+            prev_key0_we  = 1'b1;
+            prev_key1_new = {k4, k5, 64'h0};
+            prev_key1_we  = 1'b1;
+            rcon_next     = 1'b1;
+          end
+        
+        else
+          begin
+            key_mem_new   = {w4, w5, k0, k1};
+            key_mem_we    = 1'b1;
+
+            prev_key0_new = {k0, k1, k2, k3};
+            prev_key0_we  = 1'b1;
+     
+            prev_key1_new = {k4, k5, 64'h0};
+            prev_key1_we  = 1'b1;
+            rcon_next     = 1'b1;
+         end
     end
 end
 
@@ -321,6 +342,7 @@ end
                   end
                 else if (round_ctr_reg == 1)
                   begin
+                  
                     key_mem_new   = key[127 : 0];
                     prev_key1_new = key[127 : 0];
                     prev_key1_we  = 1'b1;
@@ -328,6 +350,13 @@ end
                   end
                 else
                   begin
+                  
+                  rconw = {rcon_reg, 24'h0};
+                  tmp_sboxw = w7;
+                  rotstw = {new_sboxw[23 : 00], new_sboxw[31 : 24]};
+                  trw = rotstw ^ rconw;
+                  tw = new_sboxw;
+                  
                     if (round_ctr_reg[0] == 0)
                       begin
                         k0 = w0 ^ trw;

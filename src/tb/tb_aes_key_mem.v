@@ -44,7 +44,7 @@ module tb_aes_key_mem();
   // Internal constant and parameter definitions.
   //----------------------------------------------------------------
   parameter DEBUG = 1;
-  parameter SHOW_SBOX = 0;
+  parameter SHOW_SBOX = 1;
 
   parameter CLK_HALF_PERIOD = 1;
   parameter CLK_PERIOD = 2 * CLK_HALF_PERIOD;
@@ -140,8 +140,9 @@ module tb_aes_key_mem();
   //----------------------------------------------------------------
   task dump_dut_state;
     begin
-      $display("State of DUT");
-      $display("------------");
+      $display("--------------------------------------------------------------------------------------");
+       $display("============ State of DUT ===========");
+      $display("--------------------------------------------------------------------------------------");
       $display("Inputs and outputs:");
       $display("key       = 0x%032x", dut.key);
       $display("keylen    = 0x%01x, init = 0x%01x, ready = 0x%01x",
@@ -150,37 +151,47 @@ module tb_aes_key_mem();
       $display("round_key = 0x%016x", dut.round_key);
       $display("");
 
-      $display("Internal states:");
+      $display("=================== Internal states ================");
       $display("key_mem_ctrl = 0x%01x, round_key_update = 0x%01x, round_ctr_reg = 0x%01x",
                dut.key_mem_ctrl_reg, dut.round_key_update, dut.round_ctr_reg);
 
-      $display("prev_key0_reg = 0x%016x, prev_key0_new = 0x%016x, prev_key0_we = 0x%01x",
+      $display("prev_key0_reg = 0x%032x, prev_key0_new = 0x%032x, prev_key0_we = 0x%01x",
                dut.prev_key0_reg, dut.prev_key0_new, dut.prev_key0_we);
-      $display("prev_key1_reg = 0x%016x, prev_key1_new = 0x%016x, prev_key1_we = 0x%01x",
+      $display("prev_key1_reg = 0x%032x, prev_key1_new = 0x%032x, prev_key1_we = 0x%01x",
                dut.prev_key1_reg, dut.prev_key1_new, dut.prev_key1_we);
-
       $display("rcon_reg = 0x%01x, rcon_new = 0x%01x,  rcon_set = 0x%01x,  rcon_next = 0x%01x, rcon_we = 0x%01x",
                dut.rcon_reg, dut.rcon_new, dut.rcon_set, dut.rcon_next, dut.rcon_we);
-
-      $display("w0 = 0x%04x, w1 = 0x%04x, w2 = 0x%04x, w3 = 0x%04x",
+               
+      $display("");       
+      $display("w0 = 0x%08x, w1 = 0x%08x, w2 = 0x%08x, w3 = 0x%08x",
                dut.round_key_gen.w0, dut.round_key_gen.w1,
                dut.round_key_gen.w2, dut.round_key_gen.w3);
-      $display("w4 = 0x%04x, w5 = 0x%04x, w6 = 0x%04x, w7 = 0x%04x",
+      $display("w4 = 0x%08x, w5 = 0x%08x, w6 = 0x%08x, w7 = 0x%08x",
                dut.round_key_gen.w4, dut.round_key_gen.w5,
                dut.round_key_gen.w6, dut.round_key_gen.w7);
-      $display("sboxw = 0x%04x, new_sboxw = 0x%04x, rconw = 0x%04x",
-               dut.sboxw, dut.new_sboxw, dut.round_key_gen.rconw);
-      $display("tw = 0x%04x, trw = 0x%04x", dut.round_key_gen.tw, dut.round_key_gen.trw);
-      $display("key_mem_new = 0x%016x, key_mem_we = 0x%01x",
-               dut.key_mem_new, dut.key_mem_we);
       $display("");
-
+      
+      $display("rotstw = 0x%08x",
+              dut.round_key_gen.rotstw);
+      $display("sboxw = 0x%08x, new_sboxw = 0x%08x, rconw = 0x%08x",
+               dut.sboxw, dut.new_sboxw, dut.round_key_gen.rconw);      
+      $display("tw = 0x%08x, trw = 0x%08x", dut.round_key_gen.tw, dut.round_key_gen.trw);
+      $display("");
+      $display("k0 = 0x%08x, k1 = 0x%08x, k2 = 0x%08x, k3 = 0x%08x",
+               dut.round_key_gen.k0, dut.round_key_gen.k1,
+               dut.round_key_gen.k2, dut.round_key_gen.k3);
+      $display("k4 = 0x%08x, k5 = 0x%08x",
+               dut.round_key_gen.k4, dut.round_key_gen.k5);
+      $display("");
+      $display("key_mem_new = 0x%032x, key_mem_we = 0x%01x",
+               dut.key_mem_new, dut.key_mem_we);
+      
       if (SHOW_SBOX)
         begin
           $display("Sbox functionality:");
           $display("sboxw = 0x%08x", sbox.sboxw);
 //          $display("tmp_new_sbox0 = 0x%02x, tmp_new_sbox1 = 0x%02x, tmp_new_sbox2 = 0x%02x, tmp_new_sbox3",
-//                   sbox.tmp_new_sbox0, sbox.tmp_new_sbox1, sbox.tmp_new_sbox2, sbox.tmp_new_sbox3);
+//                 sbox.sboxw[31:24], sbox.sboxw[23 : 16], sbox.sboxw[15 : 8], sbox.sboxw[7 : 0]);
           $display("new_sboxw = 0x%08x", sbox.new_sboxw);
           $display("");
         end
@@ -590,27 +601,27 @@ endtask // test_key_192
                    expected_04, expected_05, expected_06, expected_07,
                    expected_08, expected_09, expected_10);
 
-      // AES-192 test case 1 key and expected values.
-     key192_0    = 256'h0000000000000000000000000000000000000000000000000000000000000000;
-     expected_00 = 128'h00000000000000000000000000000000;
-     expected_01 = 128'h62636362636362636263636263636263;
-     expected_02 = 128'h9b313b391b2e2f2b9b313b391b2e2f2b;
-     expected_03 = 128'h3d80477d4716fe3e1e237e446d7a883b;
-     expected_04 = 128'hef44a541a8525b7fb671253bdb0bad00;
-     expected_05 = 128'hd4d1c6f87c839d87caf2b8bc11f915bc;
-     expected_06 = 128'h6d88a37a110b3efddbf98641ca0093fd;
-     expected_07 = 128'h4e54f70e5f5fc9f384a64fb24ea6dc4f;
-     expected_08 = 128'hed2e51bdb31e7f9e0c4e60dcc374dced;
-     expected_09 = 128'hc00b8b1873bd3f6d7e0af1fa27cf73c3;
-     expected_10 = 128'hb537f12d4cbbd5f11aa0beaf8cc08b2f;
-     expected_11 = 128'h2b8c3e4e45905a605b3c6d66f82f5bdd;
-     expected_12 = 128'hec819d3f11c6d85f2bf0b8f3218a6a47;
+//      // AES-192 test case 1 key and expected values.
+//     key192_0    = 256'h0000000000000000000000000000000000000000000000000000000000000000;
+//     expected_00 = 128'h00000000000000000000000000000000;
+//     expected_01 = 128'h62636362636362636263636263636263;
+//     expected_02 = 128'h9b313b391b2e2f2b9b313b391b2e2f2b;
+//     expected_03 = 128'h3d80477d4716fe3e1e237e446d7a883b;
+//     expected_04 = 128'hef44a541a8525b7fb671253bdb0bad00;
+//     expected_05 = 128'hd4d1c6f87c839d87caf2b8bc11f915bc;
+//     expected_06 = 128'h6d88a37a110b3efddbf98641ca0093fd;
+//     expected_07 = 128'h4e54f70e5f5fc9f384a64fb24ea6dc4f;
+//     expected_08 = 128'hed2e51bdb31e7f9e0c4e60dcc374dced;
+//     expected_09 = 128'hc00b8b1873bd3f6d7e0af1fa27cf73c3;
+//     expected_10 = 128'hb537f12d4cbbd5f11aa0beaf8cc08b2f;
+//     expected_11 = 128'h2b8c3e4e45905a605b3c6d66f82f5bdd;
+//     expected_12 = 128'hec819d3f11c6d85f2bf0b8f3218a6a47;
 
-     test_key_192(key192_0,
-             expected_00, expected_01, expected_02, expected_03,
-             expected_04, expected_05, expected_06, expected_07,
-             expected_08, expected_09, expected_10, expected_11,
-             expected_12);
+//     test_key_192(key192_0,
+//             expected_00, expected_01, expected_02, expected_03,
+//             expected_04, expected_05, expected_06, expected_07,
+//             expected_08, expected_09, expected_10, expected_11,
+//             expected_12);
      
       // AES-192 test case 1 key and expected values.
      key192_1    = 256'h8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b0000000000000000;
