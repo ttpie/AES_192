@@ -632,7 +632,7 @@ endtask // test_key_192
      expected_04 = 128'he75fad44bb095386485af05721efb14f;
      expected_05 = 128'ha448f6d94d6dce24aa326360113b30e6;
      expected_06 = 128'ha25e7ed583b1cf9a27f939436a94f767;
-     expected_07 = 128'hc0a69407d19da4e1d19da4e16fa64971;
+     expected_07 = 128'hc0a69407d19da4e1ec1786eb6fa64971;
      expected_08 = 128'h485f703222cb8755e26d135233f0b7b3;
      expected_09 = 128'h40beeb282f18a2596747d26b458c553e;
      expected_10 = 128'ha7e1466c9411f1df821f750aad07d753;

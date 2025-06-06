@@ -304,7 +304,7 @@ begin
         k4 = k3 ^ w4;
         k5 = k4 ^ w5;
         
-        if (round_ctr_reg == 3 || round_ctr_reg == 6 || round_ctr_reg == 9)// round 3, 6, 9 excess 2 word
+        if (round_ctr_reg == 3 || round_ctr_reg == 6 || round_ctr_reg == 9 || round_ctr_reg == 12)// round 3, 6, 9, 12 excess 2 word
           begin
             key_mem_new   = {k0, k1, k2, k3};
             key_mem_we    = 1'b1;
