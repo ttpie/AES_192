@@ -44,7 +44,7 @@ module tb_aes_decipher_block();
   // Internal constant and parameter definitions.
   //----------------------------------------------------------------
   parameter DEBUG     = 1;
-  parameter DUMP_WAIT = 0;
+  parameter DUMP_WAIT = 1;
 
   parameter CLK_HALF_PERIOD = 1;
   parameter CLK_PERIOD = 2 * CLK_HALF_PERIOD;
@@ -140,8 +140,8 @@ module tb_aes_decipher_block();
   //----------------------------------------------------------------
   task dump_dut_state;
     begin
-      $display("State of DUT");
-      $display("------------");
+      $display("=========== State of DUT ============");
+      $display("=====================================");
       $display("Interfaces");
       $display("ready = 0x%01x, next = 0x%01x, keylen = 0x%01x",
                dut.ready, dut.next, dut.keylen);
@@ -156,7 +156,7 @@ module tb_aes_decipher_block();
       $display("");
 
       $display("Internal data values");
-      $display("round_key = 0x%016x", dut.round_key);
+      $display("round_key = 0x%032x", dut.round_key);
       $display("sboxw = 0x%08x, new_sboxw = 0x%08x", dut.tmp_sboxw, dut.new_sboxw);
       $display("block_w0_reg = 0x%08x, block_w1_reg = 0x%08x, block_w2_reg = 0x%08x, block_w3_reg = 0x%08x",
                dut.block_w0_reg, dut.block_w1_reg, dut.block_w2_reg, dut.block_w3_reg);
@@ -377,20 +377,21 @@ module tb_aes_decipher_block();
 
       // NIST 192 bit ECB decryption test
       key_mem[00] = 128'h8e73b0f7da0e6452c810f32b809079e5;
-      key_mem[01] = 128'h62f8ead2522c6b7b;
-      key_mem[02] = 128'hfe0c91f72402f5a5ec12068e6c827f6b;
-      key_mem[03] = 128'h0e7a95b95c56fec2;
-      key_mem[04] = 128'h4db7b4bd69b54118;
-      key_mem[05] = 128'h85a74796e92538fd;
-      key_mem[06] = 128'he75fad44bb095386485af05721efb14f;
-      key_mem[07] = 128'ha448f6d94d6dce24aa326360113b30e6;
-      key_mem[08] = 128'ha25e7ed583b1cf9a27f939436a94f767;
-      key_mem[09] = 128'hc0a69407d19da4e1ec1786eb6fa64971;
-      key_mem[10] = 128'h485f703222cb8755e26d135233f0b7b3;
-      key_mem[11] = 128'h40beeb282f18a2596747d26b458c553e;
-      key_mem[12] = 128'h00000000000000000000000000000000;
+      key_mem[01] = 128'h62f8ead2522c6b7bfe0c91f72402f5a5;
+      key_mem[02] = 128'hec12068e6c827f6b0e7a95b95c56fec2;
+      key_mem[03] = 128'h4db7b4bd69b5411885a74796e92538fd;
+      key_mem[04] = 128'he75fad44bb095386485af05721efb14f;
+      key_mem[05] = 128'ha448f6d94d6dce24aa326360113b30e6;
+      key_mem[06] = 128'ha25e7ed583b1cf9a27f939436a94f767;
+      key_mem[07] = 128'hc0a69407d19da4e1ec1786eb6fa64971;
+      key_mem[08] = 128'h485f703222cb8755e26d135233f0b7b3;
+      key_mem[09] = 128'h40beeb282f18a2596747d26b458c553e;
+      key_mem[10] = 128'ha7e1466c9411f1df821f750aad07d753;
+      key_mem[11] = 128'hca4005388fcc5006282d166abc3ce7b5;
+      key_mem[12] = 128'he98ba06f448c773c8ecc720401002202;
       key_mem[13] = 128'h00000000000000000000000000000000;
       key_mem[14] = 128'h00000000000000000000000000000000;
+      
 
       test_ecb_dec(AES_192_BIT_KEY, nist_ecb_192_dec_ciphertext0, nist_plaintext0);
       test_ecb_dec(AES_192_BIT_KEY, nist_ecb_192_dec_ciphertext1, nist_plaintext1);
