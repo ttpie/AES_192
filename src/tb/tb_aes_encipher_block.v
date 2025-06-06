@@ -157,8 +157,8 @@ module tb_aes_encipher_block();
   //----------------------------------------------------------------
   task dump_dut_state;
     begin
-      $display("State of DUT");
-      $display("------------");
+      $display("============== State of DUT ===========");
+      $display("=======================================");
       $display("Interfaces");
       $display("ready = 0x%01x, next = 0x%01x, keylen = 0x%2x",
                dut.ready, dut.next, dut.keylen);
@@ -172,8 +172,8 @@ module tb_aes_encipher_block();
                dut.enc_ctrl_reg, dut.update_type, dut.sword_ctr_reg, dut.round_ctr_reg);
       $display("");
 
-      $display("Internal data values");
-      $display("round_key = 0x%016x", dut.round_key);
+      $display("================= Internal data values ===================");
+      $display("round_key = 0x%032x", dut.round_key);
       $display("sboxw = 0x%08x, new_sboxw = 0x%08x", dut.sboxw, dut.new_sboxw);
       $display("block_w0_reg = 0x%08x, block_w1_reg = 0x%08x, block_w2_reg = 0x%08x, block_w3_reg = 0x%08x",
                dut.block_w0_reg, dut.block_w1_reg, dut.block_w2_reg, dut.block_w3_reg);
@@ -352,7 +352,7 @@ task load_nist192_key;
     key_mem[04] = 128'he75fad44bb095386485af05721efb14f;
     key_mem[05] = 128'ha448f6d94d6dce24aa326360113b30e6;
     key_mem[06] = 128'ha25e7ed583b1cf9a27f939436a94f767;
-    key_mem[07] = 128'hc0a69407d19da4e1d19da4e16fa64971;
+    key_mem[07] = 128'hc0a69407d19da4e1ec1786eb6fa64971;
     key_mem[08] = 128'h485f703222cb8755e26d135233f0b7b3;
     key_mem[09] = 128'h40beeb282f18a2596747d26b458c553e;
     key_mem[10] = 128'ha7e1466c9411f1df821f750aad07d753;
