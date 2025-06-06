@@ -323,7 +323,6 @@ begin
 
             prev_key0_new = {k0, k1, k2, k3};
             prev_key0_we  = 1'b1;
-     
             prev_key1_new = {k4, k5, 64'h0};
             prev_key1_we  = 1'b1;
             rcon_next     = 1'b1;
