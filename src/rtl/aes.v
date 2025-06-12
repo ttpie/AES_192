@@ -70,7 +70,7 @@ module aes(
 
   localparam ADDR_CONFIG      = 8'h0a;
   localparam CTRL_ENCDEC_BIT  = 0;
-  localparam CTRL_KEYLEN_BIT  = 0;
+  localparam CTRL_KEYLEN_BIT  = 1;
 
   localparam ADDR_KEY0        = 8'h10;
   localparam ADDR_KEY7        = 8'h17;
@@ -201,7 +201,7 @@ module aes(
           if (config_we)
             begin
               encdec_reg <= write_data[CTRL_ENCDEC_BIT];
-              keylen_reg <= write_data[CTRL_KEYLEN_BIT + 1 : CTRL_KEYLEN_BIT];  // [1:0]
+              keylen_reg <= write_data[CTRL_KEYLEN_BIT + 1 : CTRL_KEYLEN_BIT];  // [2:1]
             end
 
           if (key_we)
@@ -253,7 +253,7 @@ module aes(
                 ADDR_NAME0:   tmp_read_data = CORE_NAME0;
                 ADDR_NAME1:   tmp_read_data = CORE_NAME1;
                 ADDR_VERSION: tmp_read_data = CORE_VERSION;
-                ADDR_CTRL:    tmp_read_data = {28'h0, keylen_reg, encdec_reg, next_reg, init_reg};
+                ADDR_CTRL:    tmp_read_data = {27'h0, keylen_reg, encdec_reg, next_reg, init_reg};
                 ADDR_STATUS:  tmp_read_data = {30'h0, valid_reg, ready_reg};
 
                 default:

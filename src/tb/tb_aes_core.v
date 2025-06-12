@@ -43,8 +43,8 @@ module tb_aes_core();
   //----------------------------------------------------------------
   // Internal constant and parameter definitions.
   //----------------------------------------------------------------
-  parameter DEBUG     = 0;
-  parameter DUMP_WAIT = 0;
+  parameter DEBUG     = 1;
+  parameter DUMP_WAIT = 1;
 
   parameter CLK_HALF_PERIOD = 1;
   parameter CLK_PERIOD = 2 * CLK_HALF_PERIOD;
@@ -133,9 +133,9 @@ module tb_aes_core();
   //----------------------------------------------------------------
   task dump_dut_state;
     begin
-      $display("State of DUT");
-      $display("------------");
-      $display("Inputs and outputs:");
+      $display("============== State of DUT ================");
+      $display("--------------------------------------------");
+      $display("============= Inputs and outputs: ===========");
       $display("encdec = 0x%01x, init = 0x%01x, next = 0x%01x",
                dut.encdec, dut.init, dut.next);
       $display("keylen = 0x%02x, key  = 0x%032x ", dut.keylen, dut.key);
@@ -356,6 +356,8 @@ module tb_aes_core();
     begin : aes_core_test
       reg [255 : 0] nist_aes128_key1;
       reg [255 : 0] nist_aes128_key2;
+      reg [255 : 0] nist_aes192_key1;
+      reg [255 : 0] nist_aes192_key2;
       reg [255 : 0] nist_aes256_key1;
       reg [255 : 0] nist_aes256_key2;
 
@@ -370,7 +372,13 @@ module tb_aes_core();
       reg [127 : 0] nist_ecb_128_enc_expected2;
       reg [127 : 0] nist_ecb_128_enc_expected3;
       reg [127 : 0] nist_ecb_128_enc_expected4;
-
+      
+      reg [127 : 0] nist_ecb_192_enc_expected0;
+      reg [127 : 0] nist_ecb_192_enc_expected1;
+      reg [127 : 0] nist_ecb_192_enc_expected2;
+      reg [127 : 0] nist_ecb_192_enc_expected3;
+      reg [127 : 0] nist_ecb_192_enc_expected4;
+      
       reg [127 : 0] nist_ecb_256_enc_expected0;
       reg [127 : 0] nist_ecb_256_enc_expected1;
       reg [127 : 0] nist_ecb_256_enc_expected2;
@@ -379,6 +387,10 @@ module tb_aes_core();
 
       nist_aes128_key1 = 256'h2b7e151628aed2a6abf7158809cf4f3c00000000000000000000000000000000;
       nist_aes128_key2 = 256'h000102030405060708090a0b0c0d0e0f00000000000000000000000000000000;
+      
+      nist_aes192_key1 = 256'h8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b0000000000000000;
+      nist_aes192_key2 = 256'h000102030405060708090a0b0c0d0e0f10111213141516000000000000000000;
+      
       nist_aes256_key1 = 256'h603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4;
       nist_aes256_key2 = 256'h000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f;
 
@@ -393,6 +405,12 @@ module tb_aes_core();
       nist_ecb_128_enc_expected2 = 128'h43b1cd7f598ece23881b00e3ed030688;
       nist_ecb_128_enc_expected3 = 128'h7b0c785e27e8ad3f8223207104725dd4;
       nist_ecb_128_enc_expected4 = 128'h69c4e0d86a7b0430d8cdb78070b4c55a;
+      
+      nist_ecb_192_enc_expected0 = 128'hbd334f1d6e45f25ff712a214571fa5cc;
+      nist_ecb_192_enc_expected1 = 128'h974104846d0ad3ad7734ecb3ecee4eef;
+      nist_ecb_192_enc_expected2 = 128'hef7afd2270e2e60adce0ba2face6444e;
+      nist_ecb_192_enc_expected3 = 128'h9a4b41ba738d6c72fb16691603c18e0e;
+    //  nist_ecb_192_enc_expected4 = 128'heb1b03f2acb64bcf28c9991cc8a4fa50;
 
       nist_ecb_256_enc_expected0 = 128'hf3eed1bdb5d2a03c064b5a7e3db181f8;
       nist_ecb_256_enc_expected1 = 128'h591ccb10d410ed26dc5ba74a31362870;
@@ -444,6 +462,36 @@ module tb_aes_core();
 
       ecb_mode_single_block_test(8'h0a, AES_DECIPHER, nist_aes128_key2, AES_128_BIT_KEY,
                                  nist_ecb_128_enc_expected4, nist_plaintext4);
+
+      $display("");
+      $display("ECB 192 bit key tests");
+      $display("---------------------");
+
+      ecb_mode_single_block_test(8'h1A, AES_ENCIPHER, nist_aes192_key1, AES_192_BIT_KEY,
+                                 nist_plaintext0, nist_ecb_192_enc_expected0);
+
+      ecb_mode_single_block_test(8'h1B, AES_ENCIPHER, nist_aes192_key1, AES_192_BIT_KEY,
+                                 nist_plaintext1, nist_ecb_192_enc_expected1);
+
+      ecb_mode_single_block_test(8'h1C, AES_ENCIPHER, nist_aes192_key1, AES_192_BIT_KEY,
+                                 nist_plaintext2, nist_ecb_192_enc_expected2);
+
+      ecb_mode_single_block_test(8'h1D, AES_ENCIPHER, nist_aes192_key1, AES_192_BIT_KEY,
+                                 nist_plaintext3, nist_ecb_192_enc_expected3);
+
+
+      ecb_mode_single_block_test(8'h1E, AES_DECIPHER, nist_aes192_key1, AES_192_BIT_KEY,
+                                 nist_ecb_192_enc_expected0, nist_plaintext0);
+
+      ecb_mode_single_block_test(8'h1F, AES_DECIPHER, nist_aes192_key1, AES_192_BIT_KEY,
+                                 nist_ecb_192_enc_expected1, nist_plaintext1);
+
+      ecb_mode_single_block_test(8'h20, AES_DECIPHER, nist_aes192_key1, AES_192_BIT_KEY,
+                                 nist_ecb_192_enc_expected2, nist_plaintext2);
+
+      ecb_mode_single_block_test(8'h21, AES_DECIPHER, nist_aes192_key1, AES_192_BIT_KEY,
+                                 nist_ecb_192_enc_expected3, nist_plaintext3);
+
 
 
       $display("");

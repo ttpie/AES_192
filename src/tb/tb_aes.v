@@ -163,14 +163,14 @@ module tb_aes();
   //----------------------------------------------------------------
   task dump_dut_state;
     begin
-      $display("cycle: 0x%016x", cycle_ctr);
+      $display("cycle: 0x%032x", cycle_ctr);
       $display("State of DUT");
       $display("------------");
       $display("ctrl_reg:   init   = 0x%01x, next   = 0x%01x", dut.init_reg, dut.next_reg);
       $display("config_reg: encdec = 0x%01x, length = 0x%02x ", dut.encdec_reg, dut.keylen_reg);
       $display("");
 
-      $display("block: 0x%08x, 0x%08x, 0x%08x, 0x%08x",
+      $display("block: 0x%032x, 0x%032x, 0x%032x, 0x%032x",
                dut.block_reg[0], dut.block_reg[1], dut.block_reg[2], dut.block_reg[3]);
       $display("");
 
@@ -248,7 +248,7 @@ module tb_aes();
     begin
       if (DEBUG)
         begin
-          $display("*** Writing 0x%08x to 0x%02x.", word, address);
+          $display("*** Writing 0x%032x to 0x%012x.", word, address);
           $display("");
         end
 
@@ -296,7 +296,7 @@ module tb_aes();
 
       if (DEBUG)
         begin
-          $display("*** Reading 0x%08x from 0x%02x.", read_data, address);
+          $display("*** Reading 0x%032x from 0x%012x.", read_data, address);
           $display("");
         end
     end
@@ -333,7 +333,7 @@ module tb_aes();
       if (DEBUG)
         begin
           $display("key length: 0x%02x", key_length);
-          $display("Initializing key expansion for key: 0x%016x", key);
+          $display("Initializing key expansion for key: 0x%064x", key);
         end
 
       write_word(ADDR_KEY0, key[255  : 224]);
@@ -345,14 +345,15 @@ module tb_aes();
       write_word(ADDR_KEY6, key[63   :  32]);
       write_word(ADDR_KEY7, key[31   :   0]);
 
-      if (key_length)
-        begin
-          write_word(ADDR_CONFIG, 8'h02);
-        end
-      else
-        begin
-          write_word(ADDR_CONFIG, 8'h00);
-        end
+//      if (key_length)
+//        begin
+//          write_word(ADDR_CONFIG, 8'h02);
+//        end
+//      else
+//        begin
+//          write_word(ADDR_CONFIG, 8'h00);
+//        end
+      write_word(ADDR_CONFIG, (key_length << 3));
 
       write_word(ADDR_CTRL, 8'h01);
 
@@ -380,7 +381,7 @@ module tb_aes();
       write_block(block);
       dump_dut_state();
 
-      write_word(ADDR_CONFIG, (8'h00 + (key_length << 1)+ encdec));
+      write_word(ADDR_CONFIG, (8'h00 + (key_length << 3)+ (encdec << 2)));
       write_word(ADDR_CTRL, 8'h02);
 
       #(100 * CLK_PERIOD);
