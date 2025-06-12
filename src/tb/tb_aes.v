@@ -163,14 +163,14 @@ module tb_aes();
   //----------------------------------------------------------------
   task dump_dut_state;
     begin
-      $display("cycle: 0x%032x", cycle_ctr);
+      $display("cycle: 0x%016x", cycle_ctr);
       $display("State of DUT");
       $display("------------");
       $display("ctrl_reg:   init   = 0x%01x, next   = 0x%01x", dut.init_reg, dut.next_reg);
       $display("config_reg: encdec = 0x%01x, length = 0x%02x ", dut.encdec_reg, dut.keylen_reg);
       $display("");
 
-      $display("block: 0x%032x, 0x%032x, 0x%032x, 0x%032x",
+      $display("block: 0x%016x, 0x%016x, 0x%016x, 0x%016x",
                dut.block_reg[0], dut.block_reg[1], dut.block_reg[2], dut.block_reg[3]);
       $display("");
 
@@ -328,7 +328,8 @@ module tb_aes();
   // init the key in the dut by writing the given key and
   // key length and then trigger init processing.
   //----------------------------------------------------------------
-  task init_key(input [255 : 0] key, input [1 : 0] key_length);
+  task init_key(input [255 : 0] key, 
+                input [1 : 0] key_length);
     begin
       if (DEBUG)
         begin
@@ -345,15 +346,15 @@ module tb_aes();
       write_word(ADDR_KEY6, key[63   :  32]);
       write_word(ADDR_KEY7, key[31   :   0]);
 
-//      if (key_length)
-//        begin
-//          write_word(ADDR_CONFIG, 8'h02);
-//        end
-//      else
-//        begin
-//          write_word(ADDR_CONFIG, 8'h00);
-//        end
-      write_word(ADDR_CONFIG, (key_length << 3));
+      if (key_length)
+        begin
+         write_word(ADDR_CONFIG, 8'h02);
+        end
+      else
+        begin
+          write_word(ADDR_CONFIG, 8'h00);
+        end
+//      write_word(ADDR_CONFIG, (key_length << 3));
 
       write_word(ADDR_CTRL, 8'h01);
 
@@ -376,12 +377,11 @@ module tb_aes();
     begin
       $display("*** TC %0d ECB mode test started.", tc_number);
       tc_ctr = tc_ctr + 1;
-
       init_key(key, key_length);
       write_block(block);
       dump_dut_state();
 
-      write_word(ADDR_CONFIG, (8'h00 + (key_length << 3)+ (encdec << 2)));
+      write_word(ADDR_CONFIG, (8'h00 + (key_length << 1)+ encdec));
       write_word(ADDR_CTRL, 8'h02);
 
       #(100 * CLK_PERIOD);
@@ -454,8 +454,8 @@ module tb_aes();
       nist_aes128_key1 = 256'h2b7e151628aed2a6abf7158809cf4f3c00000000000000000000000000000000;
       nist_aes128_key2 = 256'h000102030405060708090a0b0c0d0e0f00000000000000000000000000000000;
       
-      nist_aes192_key1 = 256'h8e73b0f7da0e6452c810f32b809079e500000000000000000000000000000000;
-      nist_aes192_key2 = 256'h000102030405060708090a0b0c0d0e0f10111213000000000000000000000000;
+       nist_aes192_key1 = 256'h8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b0000000000000000;
+      nist_aes192_key2 = 256'h000102030405060708090a0b0c0d0e0f10111213141516000000000000000000;
 
       nist_aes256_key1 = 256'h603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4;
       nist_aes256_key2 = 256'h000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f;
@@ -476,7 +476,6 @@ module tb_aes();
       nist_ecb_192_enc_expected1 = 128'h974104846d0ad3ad7734ecb3ecee4eef;
       nist_ecb_192_enc_expected2 = 128'hef7afd2270e2e60adce0ba2face6444e;
       nist_ecb_192_enc_expected3 = 128'h9a4b41ba738d6c72fb16691603c18e0e;
-      nist_ecb_192_enc_expected4 = 128'h00112233445566778899aabbccddeeff;
 
       nist_ecb_256_enc_expected0 = 128'hf3eed1bdb5d2a03c064b5a7e3db181f8;
       nist_ecb_256_enc_expected1 = 128'h591ccb10d410ed26dc5ba74a31362870;

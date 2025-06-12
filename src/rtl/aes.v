@@ -201,7 +201,7 @@ module aes(
           if (config_we)
             begin
               encdec_reg <= write_data[CTRL_ENCDEC_BIT];
-              keylen_reg <= write_data[CTRL_KEYLEN_BIT + 1 : CTRL_KEYLEN_BIT];  // [2:1]
+              keylen_reg <= write_data[CTRL_KEYLEN_BIT : CTRL_KEYLEN_BIT - 1];  // [1:0]
             end
 
           if (key_we)
